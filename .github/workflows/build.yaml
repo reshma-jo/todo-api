@@ -1,0 +1,49 @@
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+  pull_request:
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 'Checkout todo-api'
+        uses: actions/checkout@v4.1.7
+        with:
+          path: todo-api
+      - name: 'Checkout report-generator'
+        uses: actions/checkout@v4.1.7
+        with:
+          repository: reshma-jo/report-generator
+          path: report-generator
+      - name: 'Set up JDK 17'
+        uses: actions/setup-java@v4.2.1
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+      - name: 'Build report-generator jar and publish to local Maven repository'
+        working-directory: ./report-generator
+        run: mvn clean install
+      - name: 'Build todo-api'
+        working-directory: ./todo-api
+        run: mvn clean install -U
+      - name: 'Archive artifacts'
+        uses: actions/upload-artifact@v4.3.4
+        with:
+          name: todo-api
+          path: |
+            ./todo-api/target/*.jar
+          if-no-files-found: warn
+          retention-days: 7
+      - name: 'Archive Test logs and reports'
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v3
+        with:
+          name: linux-test-report
+          path: |
+            todo-api/target/surefire-reports/
+            todo-api/target/failsafe-reports/
