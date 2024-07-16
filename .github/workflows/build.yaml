@@ -19,6 +19,7 @@ jobs:
         uses: actions/checkout@v4.1.7
         with:
           repository: anusreelakshmi934/report-generator
+          ref: main
           path: report-generator
       - name: 'Set up JDK 17'
         uses: actions/setup-java@v4.2.1
