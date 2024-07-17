@@ -18,7 +18,7 @@ jobs:
       - name: 'Checkout report-generator'
         uses: actions/checkout@v4.1.7
         with:
-          repository: anusreelakshmi934/report-generator
+          repository: reshma-jo/report-generator
           ref: main
           path: report-generator
       - name: 'Set up JDK 17'
